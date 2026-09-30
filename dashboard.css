@@ -1,0 +1,114 @@
+/* ===== ESTILOS DO DASHBOARD (index.html) ===== */
+
+.saudacao h1 { font-size: 2rem; }
+.saudacao p { color: var(--texto-suave); margin-top: 4px; font-size: 1.1rem; }
+
+/* ----- Cards de resumo ----- */
+.resumo {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin: 28px 0 40px;
+}
+.card-resumo { display: flex; flex-direction: column; gap: 4px; border-left: 5px solid var(--azul-esverdeado); }
+.resumo-numero { font-size: 2.4rem; font-weight: 700; line-height: 1; }
+.resumo-texto { color: var(--texto-suave); font-size: 0.95rem; }
+.resumo-urgente { border-left-color: var(--vermelho); }
+.resumo-concluido { border-left-color: var(--verde); }
+
+/* ----- Próximas atividades ----- */
+.atividades-topo {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+.atividades h2 { font-size: 1.4rem; }
+.subtitulo { color: var(--texto-suave); font-size: 0.95rem; }
+
+.lista-atividades { display: flex; flex-direction: column; gap: 12px; }
+
+.atividade {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  padding: 20px 24px;
+}
+.atividade-icone { font-size: 1.3rem; }
+.atividade-info { flex: 1; }
+.atividade-info h3 { font-size: 1.05rem; }
+.atividade-info p { color: var(--texto-suave); font-size: 0.9rem; }
+.atividade-descricao { margin-top: 4px; }
+
+.etiqueta {
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.prioridade-alta  { background: var(--vermelho-claro); color: var(--vermelho); }
+.prioridade-media { background: var(--amarelo-claro); color: #8a6a00; }
+.prioridade-baixa { background: var(--verde-claro); color: #2e7d5f; }
+
+/* ----- Destaque da área Pausa ----- */
+.destaque-pausa {
+  margin-top: 48px;
+  padding: 40px;
+  border-radius: 24px;
+  background: linear-gradient(135deg, var(--azul-esverdeado-claro), var(--verde-claro));
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+.destaque-pausa h2 { font-size: 1.7rem; font-weight: 600; }
+.destaque-pausa p { color: var(--texto-suave); font-size: 1.05rem; margin-top: 4px; }
+.botao-pausa { background: var(--azul-esverdeado); color: #fff; padding: 14px 28px; }
+.botao-pausa:hover { background: #216874; }
+
+/* ----- Modal ----- */
+.modal-fundo {
+  position: fixed;
+  inset: 0;
+  background: rgba(30, 45, 61, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 10;
+}
+.modal-fundo[hidden] { display: none; }
+
+.modal {
+  background: var(--branco);
+  border-radius: 20px;
+  padding: 32px;
+  width: 100%;
+  max-width: 480px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+.modal h2 { margin-bottom: 20px; }
+
+.modal label { display: block; font-size: 0.9rem; font-weight: 500; margin-bottom: 14px; }
+.modal input, .modal select, .modal textarea {
+  display: block;
+  width: 100%;
+  margin-top: 6px;
+  padding: 10px 12px;
+  border: 1px solid var(--borda);
+  border-radius: 10px;
+  font: inherit;
+  background: var(--branco);
+}
+.linha { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.modal-botoes { display: flex; justify-content: flex-end; gap: 10px; margin-top: 8px; }
+
+@media (max-width: 800px) {
+  .resumo { grid-template-columns: 1fr; }
+  .atividade { flex-wrap: wrap; }
+}
