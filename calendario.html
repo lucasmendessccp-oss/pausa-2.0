@@ -4,26 +4,270 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>PAUSA · Calendário</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="pausa.css">
+  <!-- dashboard.css já tem o modal e as etiquetas de prioridade -->
+  <link rel="stylesheet" href="dashboard.css">
+
+  <!-- Estilos só desta página (calendário, painel do dia, resumo e mensagem).
+       Se preferir, mova para um calendario.css no futuro. -->
+  <style>
+    [hidden] { display: none !important; }
+
+    .conteudo-calendario { max-width: 1180px; }
+    .cabecalho-calendario { margin-bottom: 24px; }
+
+    /* ----- Filtros (mesmo estilo da Minha rotina) ----- */
+    .filtros-cal { display: flex; flex-wrap: wrap; gap: 14px 40px; padding: 16px 24px; margin-bottom: 24px; }
+    .filtro-grupo { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+    .filtro-rotulo { min-width: 80px; font-size: 0.85rem; font-weight: 600; color: var(--texto-suave); }
+    .chip {
+      padding: 6px 16px;
+      border: 1px solid var(--borda);
+      border-radius: 999px;
+      background: var(--branco);
+      font: inherit;
+      font-size: 0.9rem;
+      color: var(--texto);
+      cursor: pointer;
+    }
+    .chip:hover { background: var(--verde-claro); }
+    .chip[aria-pressed="true"] { background: var(--verde); border-color: var(--verde); color: #fff; }
+
+    /* ----- Calendário + painel lateral ----- */
+    .layout-calendario { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 24px; align-items: start; }
+
+    .calendario { padding: 24px; }
+    .cal-barra { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+    .cal-titulo { min-width: 170px; text-align: center; font-size: 1.35rem; font-weight: 600; }
+    .cal-seta {
+      width: 40px; height: 40px;
+      border: 1px solid var(--borda);
+      border-radius: 50%;
+      background: var(--branco);
+      font: inherit; font-size: 1.1rem;
+      color: var(--texto);
+      cursor: pointer;
+    }
+    .cal-seta:hover { background: var(--verde-claro); }
+    .cal-hoje { margin-left: auto; padding: 8px 18px; }
+
+    .cal-semana, .cal-grade { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px; }
+    .cal-semana { margin-bottom: 6px; text-align: center; font-size: 0.8rem; font-weight: 600; color: var(--texto-suave); }
+
+    .dia {
+      display: flex; flex-direction: column; align-items: flex-start; gap: 8px;
+      min-height: 84px;
+      padding: 8px;
+      border: 2px solid transparent;
+      border-radius: 12px;
+      background: var(--fundo);
+      font: inherit;
+      color: var(--texto);
+      text-align: left;
+      cursor: pointer;
+    }
+    .dia:hover { background: var(--verde-claro); }
+    .dia-numero {
+      display: inline-flex; align-items: center; justify-content: center;
+      min-width: 26px; height: 26px;
+      border-radius: 50%;
+      font-size: 0.9rem; font-weight: 600;
+    }
+    .fora-do-mes { background: transparent; opacity: 0.5; }
+    .hoje .dia-numero { background: var(--azul-esverdeado); color: #fff; }
+    .selecionado { border-color: var(--verde); background: var(--verde-claro); }
+
+    /* Indicadores: cada bolinha é uma atividade */
+    .pontos { display: flex; flex-wrap: wrap; gap: 4px; }
+    .ponto { display: inline-block; width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+    .ponto-alta { background: var(--vermelho); }
+    .ponto-media { background: var(--amarelo); }
+    .ponto-baixa { background: var(--verde); }
+    .pontos-mais { font-size: 0.7rem; line-height: 10px; color: var(--texto-suave); }
+
+    .legenda { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 16px; font-size: 0.85rem; color: var(--texto-suave); }
+    .legenda span { display: inline-flex; align-items: center; gap: 6px; }
+
+    /* ----- Painel do dia ----- */
+    .painel-dia { padding: 24px; }
+    .painel-dia h2 { font-size: 1.3rem; }
+    .painel-contagem { color: var(--texto-suave); font-size: 0.9rem; margin-bottom: 8px; }
+    .painel-vazio { color: var(--texto-suave); margin: 12px 0 20px; }
+    .painel-dia .botao { width: 100%; margin-top: 16px; }
+    .item-dia { display: flex; gap: 12px; padding: 14px 0; border-top: 1px solid var(--borda); }
+    .item-dia .ponto { margin-top: 6px; }
+    .item-corpo { flex: 1; min-width: 0; }
+    .item-topo { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+    .item-topo h3 { font-size: 1rem; }
+    .item-meta, .item-descricao { color: var(--texto-suave); font-size: 0.85rem; }
+    .item-descricao { margin-top: 4px; }
+
+    /* ----- Resumo do mês ----- */
+    .resumo-mes { margin-top: 24px; padding: 24px; }
+    .resumo-mes h2 { font-size: 1.2rem; margin-bottom: 16px; }
+    .resumo-itens { display: flex; flex-wrap: wrap; gap: 16px 40px; }
+    .estatistica strong { display: block; font-size: 1.8rem; line-height: 1.1; }
+    .estatistica span { font-size: 0.85rem; color: var(--texto-suave); }
+
+    /* ----- Mensagem do PAUSA ----- */
+    .mensagem-pausa {
+      margin-top: 24px;
+      padding: 28px 32px;
+      border-radius: 20px;
+      background: linear-gradient(135deg, var(--azul-esverdeado-claro), var(--verde-claro));
+    }
+    .mensagem-rotulo { font-size: 0.8rem; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--azul-esverdeado); margin-bottom: 6px; }
+    .mensagem-pausa h2 { font-size: 1.3rem; font-weight: 600; }
+    .mensagem-pausa p.mensagem-texto { color: var(--texto-suave); margin-top: 4px; }
+
+    /* ----- Telas menores ----- */
+    @media (max-width: 1200px) {
+      .layout-calendario { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 800px) {
+      .calendario { padding: 16px; }
+      .cal-grade, .cal-semana { gap: 3px; }
+      .dia { min-height: 62px; padding: 5px; }
+      .ponto { width: 8px; height: 8px; }
+      .filtro-rotulo { width: 100%; }
+    }
+  </style>
 </head>
 <body>
+
+  <!-- MENU LATERAL (igual ao das outras páginas; "Calendário" ativo) -->
   <aside class="sidebar">
     <a href="index.html" class="logo">PAUSA</a>
     <nav class="menu">
       <a href="index.html" class="menu-link">Início</a>
       <a href="rotina.html" class="menu-link">Minha rotina</a>
-      <a href="calendario.html" class="menu-link ativo">Calendário</a>
+      <a href="calendario.html" class="menu-link ativo" aria-current="page">Calendário</a>
       <a href="pausa.html" class="menu-link">Pausa</a>
     </nav>
     <p class="lema">Organize seus estudos.<br>Respeite o seu tempo.</p>
   </aside>
-  <main class="conteudo pausa-pagina">
-    <h1>Calendário</h1>
-    <p>Esta página será desenvolvida na próxima etapa.</p>
 
+  <main class="conteudo conteudo-calendario">
+
+    <!-- CABEÇALHO -->
+    <header class="atividades-topo cabecalho-calendario">
+      <div class="saudacao">
+        <h1>Calendário</h1>
+        <p>Visualize suas atividades e organize seus prazos.</p>
+      </div>
+      <button class="botao botao-principal" id="botao-adicionar">+ Adicionar atividade</button>
+    </header>
+
+    <!-- FILTROS -->
+    <section class="card filtros-cal" aria-label="Filtros">
+      <div class="filtro-grupo" role="group" aria-label="Filtrar por tipo">
+        <span class="filtro-rotulo">Tipo</span>
+        <button class="chip" data-filtro="tipo" data-valor="Todas" aria-pressed="true">Todas</button>
+        <button class="chip" data-filtro="tipo" data-valor="Prova" aria-pressed="false">Provas</button>
+        <button class="chip" data-filtro="tipo" data-valor="Trabalho" aria-pressed="false">Trabalhos</button>
+        <button class="chip" data-filtro="tipo" data-valor="Projeto" aria-pressed="false">Projetos</button>
+        <button class="chip" data-filtro="tipo" data-valor="Estudo" aria-pressed="false">Estudos</button>
+      </div>
+      <div class="filtro-grupo" role="group" aria-label="Filtrar por prioridade">
+        <span class="filtro-rotulo">Prioridade</span>
+        <button class="chip" data-filtro="prioridade" data-valor="Todas" aria-pressed="true">Todas</button>
+        <button class="chip" data-filtro="prioridade" data-valor="Alta" aria-pressed="false">Alta</button>
+        <button class="chip" data-filtro="prioridade" data-valor="Média" aria-pressed="false">Média</button>
+        <button class="chip" data-filtro="prioridade" data-valor="Baixa" aria-pressed="false">Baixa</button>
+      </div>
+    </section>
+
+    <div class="layout-calendario">
+
+      <!-- CALENDÁRIO MENSAL (a grade é criada pelo calendario.js) -->
+      <section class="card calendario" aria-label="Calendário mensal">
+        <div class="cal-barra">
+          <button class="cal-seta" id="botao-anterior" aria-label="Mês anterior">←</button>
+          <h2 class="cal-titulo" id="titulo-mes">Mês Ano</h2>
+          <button class="cal-seta" id="botao-proximo" aria-label="Próximo mês">→</button>
+          <button class="botao botao-secundario cal-hoje" id="botao-hoje">Hoje</button>
+        </div>
+
+        <div class="cal-semana" aria-hidden="true">
+          <span>Seg</span><span>Ter</span><span>Qua</span><span>Qui</span><span>Sex</span><span>Sáb</span><span>Dom</span>
+        </div>
+        <div class="cal-grade" id="grade-dias" role="group" aria-label="Dias do mês"></div>
+
+        <div class="legenda" aria-label="Legenda de prioridades">
+          <span><i class="ponto ponto-alta"></i> Alta</span>
+          <span><i class="ponto ponto-media"></i> Média</span>
+          <span><i class="ponto ponto-baixa"></i> Baixa</span>
+        </div>
+      </section>
+
+      <!-- PAINEL DO DIA SELECIONADO -->
+      <aside class="card painel-dia" aria-live="polite">
+        <h2 id="painel-data">Selecione um dia</h2>
+        <p class="painel-contagem" id="painel-contagem"></p>
+        <div id="painel-lista"></div>
+        <p class="painel-vazio" id="painel-vazio" hidden>Nenhuma atividade programada para este dia.</p>
+        <button class="botao botao-principal" id="botao-adicionar-dia" hidden>+ Adicionar atividade</button>
+      </aside>
+    </div>
+
+    <!-- RESUMO DO MÊS -->
+    <section class="card resumo-mes" aria-label="Resumo do mês">
+      <h2 id="resumo-titulo">Mês Ano</h2>
+      <div class="resumo-itens" id="resumo-itens"></div>
+    </section>
+
+    <!-- MENSAGEM DO PAUSA (escolhida pelo calendario.js conforme a carga do mês) -->
+    <section class="mensagem-pausa" aria-label="Mensagem do PAUSA">
+      <p class="mensagem-rotulo">Mensagem do PAUSA</p>
+      <h2 id="mensagem-titulo"></h2>
+      <p class="mensagem-texto" id="mensagem-texto"></p>
+    </section>
   </main>
+
+  <!-- MODAL: NOVA ATIVIDADE (mesmo da Minha rotina) -->
+  <div class="modal-fundo" id="modal" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-titulo">
+      <h2 id="modal-titulo">Nova atividade</h2>
+      <form id="form-atividade">
+        <label>Título
+          <input type="text" id="campo-titulo" required placeholder="Ex.: Prova de Biologia">
+        </label>
+        <label>Tipo
+          <select id="campo-tipo">
+            <option>Prova</option>
+            <option>Trabalho</option>
+            <option>Projeto</option>
+            <option>Estudo</option>
+          </select>
+        </label>
+        <div class="linha">
+          <label>Data
+            <input type="date" id="campo-data" required>
+          </label>
+          <label>Horário
+            <input type="time" id="campo-horario">
+          </label>
+        </div>
+        <label>Prioridade
+          <select id="campo-prioridade">
+            <option value="Alta">Alta</option>
+            <option value="Média" selected>Média</option>
+            <option value="Baixa">Baixa</option>
+          </select>
+        </label>
+        <label>Descrição
+          <textarea id="campo-descricao" rows="3" placeholder="Algum detalhe que ajude a lembrar?"></textarea>
+        </label>
+        <div class="modal-botoes">
+          <button type="button" class="botao botao-secundario" id="botao-cancelar">Cancelar</button>
+          <button type="submit" class="botao botao-principal">Salvar atividade</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <script src="calendario.js"></script>
 </body>
 </html>

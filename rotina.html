@@ -4,26 +4,198 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>PAUSA · Minha rotina</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="pausa.css">
+  <!-- dashboard.css já tem os cards de resumo, os cards de atividade e o modal -->
+  <link rel="stylesheet" href="dashboard.css">
+
+  <!-- Estilos pequenos só desta página (filtros, atividade concluída, excluir, mensagem vazia).
+       Se preferir, mova para um rotina.css no futuro. -->
+  <style>
+    [hidden] { display: none !important; }
+
+    .cabecalho-rotina { margin-bottom: 0; }
+
+    /* Filtros */
+    .filtros { display: flex; flex-direction: column; gap: 16px; margin-bottom: 24px; padding: 20px 24px; }
+    .busca {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1px solid var(--borda);
+      border-radius: 12px;
+      font: inherit;
+      background: var(--branco);
+    }
+    .filtro-grupo { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+    .filtro-rotulo { min-width: 80px; font-size: 0.85rem; font-weight: 600; color: var(--texto-suave); }
+    .chip {
+      padding: 6px 16px;
+      border: 1px solid var(--borda);
+      border-radius: 999px;
+      background: var(--branco);
+      font: inherit;
+      font-size: 0.9rem;
+      color: var(--texto);
+      cursor: pointer;
+    }
+    .chip:hover { background: var(--verde-claro); }
+    .chip[aria-pressed="true"] { background: var(--verde); border-color: var(--verde); color: #fff; }
+
+    /* Atividades */
+    .concluir { width: 22px; height: 22px; accent-color: var(--verde); cursor: pointer; flex-shrink: 0; }
+    .atividade-lado { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
+    .excluir {
+      border: none;
+      background: none;
+      padding: 2px 4px;
+      font: inherit;
+      font-size: 0.8rem;
+      color: var(--texto-suave);
+      cursor: pointer;
+    }
+    .excluir:hover { color: var(--vermelho); text-decoration: underline; }
+    .atividade.concluida { opacity: 0.6; box-shadow: none; }
+    .atividade.concluida h3 { text-decoration: line-through; color: var(--texto-suave); }
+
+    /* Seção "Atividades concluídas" */
+    .concluidas { margin-top: 48px; }
+    .concluidas h2 { margin-bottom: 16px; }
+    .vazio-concluidas { padding: 24px 0; color: var(--texto-suave); }
+
+    /* Nenhum resultado */
+    .vazio { text-align: center; padding: 48px 20px; color: var(--texto-suave); }
+    .vazio-titulo { font-size: 1.15rem; font-weight: 600; color: var(--texto); margin-bottom: 4px; }
+
+    @media (max-width: 800px) {
+      .filtro-rotulo { width: 100%; }
+      .atividade-lado { flex-direction: row; align-items: center; width: 100%; justify-content: space-between; }
+    }
+  </style>
 </head>
 <body>
+
+  <!-- MENU LATERAL (igual ao das outras páginas; "Minha rotina" ativo) -->
   <aside class="sidebar">
     <a href="index.html" class="logo">PAUSA</a>
     <nav class="menu">
       <a href="index.html" class="menu-link">Início</a>
-      <a href="rotina.html" class="menu-link ativo">Minha rotina</a>
+      <a href="rotina.html" class="menu-link ativo" aria-current="page">Minha rotina</a>
       <a href="calendario.html" class="menu-link">Calendário</a>
       <a href="pausa.html" class="menu-link">Pausa</a>
     </nav>
     <p class="lema">Organize seus estudos.<br>Respeite o seu tempo.</p>
   </aside>
-  <main class="conteudo pausa-pagina">
-    <h1>Minha rotina</h1>
-    <p>Esta página será desenvolvida na próxima etapa.</p>
 
+  <main class="conteudo">
+
+    <!-- CABEÇALHO -->
+    <header class="atividades-topo cabecalho-rotina">
+      <div class="saudacao">
+        <h1>Minha rotina</h1>
+        <p>Tudo o que você precisa fazer, organizado em um só lugar.</p>
+      </div>
+      <button class="botao botao-principal" id="botao-adicionar">+ Adicionar atividade</button>
+    </header>
+
+    <!-- RESUMO (os números são preenchidos pelo rotina.js) -->
+    <section class="resumo" aria-label="Resumo da rotina">
+      <div class="card card-resumo">
+        <span class="resumo-numero" id="contador-pendentes">0</span>
+        <span class="resumo-texto" id="texto-pendentes">atividades pendentes</span>
+      </div>
+      <div class="card card-resumo resumo-urgente">
+        <span class="resumo-numero" id="contador-urgentes">0</span>
+        <span class="resumo-texto" id="texto-urgentes">atividade urgente</span>
+      </div>
+      <div class="card card-resumo resumo-concluido">
+        <span class="resumo-numero" id="contador-concluidas">0</span>
+        <span class="resumo-texto" id="texto-concluidas">atividades concluídas</span>
+      </div>
+    </section>
+
+    <!-- FILTROS E PESQUISA -->
+    <section class="card filtros" aria-label="Filtros">
+      <input type="search" class="busca" id="campo-busca" placeholder="Pesquisar atividade..." aria-label="Pesquisar atividade pelo título">
+
+      <div class="filtro-grupo" role="group" aria-label="Filtrar por tipo">
+        <span class="filtro-rotulo">Tipo</span>
+        <button class="chip" data-filtro="tipo" data-valor="Todas" aria-pressed="true">Todas</button>
+        <button class="chip" data-filtro="tipo" data-valor="Prova" aria-pressed="false">Provas</button>
+        <button class="chip" data-filtro="tipo" data-valor="Trabalho" aria-pressed="false">Trabalhos</button>
+        <button class="chip" data-filtro="tipo" data-valor="Projeto" aria-pressed="false">Projetos</button>
+        <button class="chip" data-filtro="tipo" data-valor="Estudo" aria-pressed="false">Estudos</button>
+      </div>
+
+      <div class="filtro-grupo" role="group" aria-label="Filtrar por prioridade">
+        <span class="filtro-rotulo">Prioridade</span>
+        <button class="chip" data-filtro="prioridade" data-valor="Todas" aria-pressed="true">Todas</button>
+        <button class="chip" data-filtro="prioridade" data-valor="Alta" aria-pressed="false">Alta</button>
+        <button class="chip" data-filtro="prioridade" data-valor="Média" aria-pressed="false">Média</button>
+        <button class="chip" data-filtro="prioridade" data-valor="Baixa" aria-pressed="false">Baixa</button>
+      </div>
+    </section>
+
+    <!-- LISTA DE ATIVIDADES (os cards são criados pelo rotina.js) -->
+    <section aria-label="Atividades">
+      <div class="lista-atividades" id="lista-atividades"></div>
+
+      <div class="vazio" id="estado-vazio" hidden>
+        <p class="vazio-titulo">Nenhuma atividade encontrada.</p>
+        <p>Tente alterar os filtros ou adicionar uma nova atividade.</p>
+      </div>
+    </section>
+
+    <!-- ATIVIDADES CONCLUÍDAS (os cards são criados pelo rotina.js) -->
+    <section class="atividades concluidas" aria-labelledby="titulo-concluidas">
+      <h2 id="titulo-concluidas">Atividades concluídas</h2>
+      <div class="lista-atividades" id="lista-concluidas"></div>
+      <p class="vazio-concluidas" id="vazio-concluidas" hidden>Nenhuma atividade concluída ainda.</p>
+    </section>
   </main>
+
+  <!-- MODAL: NOVA ATIVIDADE (mesmo do dashboard) -->
+  <div class="modal-fundo" id="modal" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-titulo">
+      <h2 id="modal-titulo">Nova atividade</h2>
+      <form id="form-atividade">
+        <label>Título
+          <input type="text" id="campo-titulo" required placeholder="Ex.: Prova de Biologia">
+        </label>
+        <label>Tipo
+          <select id="campo-tipo">
+            <option>Prova</option>
+            <option>Trabalho</option>
+            <option>Projeto</option>
+            <option>Estudo</option>
+          </select>
+        </label>
+        <div class="linha">
+          <label>Data
+            <input type="date" id="campo-data" required>
+          </label>
+          <label>Horário
+            <input type="time" id="campo-horario">
+          </label>
+        </div>
+        <label>Prioridade
+          <select id="campo-prioridade">
+            <option value="Alta">Alta</option>
+            <option value="Média" selected>Média</option>
+            <option value="Baixa">Baixa</option>
+          </select>
+        </label>
+        <label>Descrição
+          <textarea id="campo-descricao" rows="3" placeholder="Algum detalhe que ajude a lembrar?"></textarea>
+        </label>
+        <div class="modal-botoes">
+          <button type="button" class="botao botao-secundario" id="botao-cancelar">Cancelar</button>
+          <button type="submit" class="botao botao-principal">Salvar atividade</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <script src="rotina.js"></script>
 </body>
 </html>
