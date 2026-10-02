@@ -36,6 +36,12 @@
   --raio-botao: 12px;
   --sombra-card: 0 1px 2px rgba(30, 45, 61, 0.04), 0 4px 16px rgba(30, 45, 61, 0.05);
   --sombra-card-hover: 0 8px 24px rgba(30, 45, 61, 0.09);
+  --sombra-modal: 0 20px 60px rgba(30, 45, 61, 0.2);
+  --sobreposicao-modal: rgba(30, 45, 61, 0.45);
+  --cor-sobre-primaria: #ffffff;  /* texto sobre botões e fundos da cor primária */
+
+  /* --- Ritmo vertical: espaço entre as grandes seções da página --- */
+  --espaco-secao: 40px;
 
   /* --- Gradientes da identidade Pausa (círculo de respiração e destaques) --- */
   --gradiente-respiracao: radial-gradient(circle at 35% 30%, #d9f0e6, #a9dac7 55%, #90c9d2);
@@ -62,6 +68,9 @@
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
+/* Garante que o atributo hidden esconda mesmo elementos com display definido por classe */
+[hidden] { display: none !important; }
+
 body {
   font-family: "Inter", system-ui, sans-serif;
   background: var(--cor-fundo);
@@ -86,6 +95,7 @@ select:focus-visible, textarea:focus-visible {
   top: 0; left: 0; bottom: 0;
   width: 230px;                   /* pausa.css usa 230px nas contas de centralização */
   padding: 32px 20px 28px;
+  overflow-y: auto;               /* se a janela for baixa, o menu rola em vez de ser cortado */
   background: var(--cor-card);
   border-right: 1px solid var(--cor-borda);
   display: flex;
@@ -98,7 +108,7 @@ select:focus-visible, textarea:focus-visible {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding-left: 4px;
+  padding-left: 9px;              /* o círculo da marca fica alinhado com os marcadores do menu */
   font-size: 1.4rem;
   font-weight: 700;
   letter-spacing: 0.1em;
@@ -118,9 +128,10 @@ select:focus-visible, textarea:focus-visible {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 10px 14px;
+  padding: 11px 14px;
   border-radius: var(--raio-botao);
   color: var(--cor-texto-secundario);
+  font-size: 0.95rem;
   font-weight: 500;
   transition: background 0.2s, color 0.2s;
 }
@@ -148,7 +159,7 @@ select:focus-visible, textarea:focus-visible {
 /* ----- Conteúdo principal ----- */
 .conteudo {
   margin-left: 230px;
-  padding: 40px;
+  padding: 40px 40px 56px;
   max-width: 1000px;
 }
 
@@ -163,8 +174,10 @@ select:focus-visible, textarea:focus-visible {
 
 /* Botões: o mesmo tamanho para todos (a borda transparente evita diferença de altura) */
 .botao {
-  display: inline-block;
-  padding: 12px 22px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 11px 22px;
   border: 1px solid transparent;
   border-radius: var(--raio-botao);
   font: inherit;
@@ -172,32 +185,41 @@ select:focus-visible, textarea:focus-visible {
   line-height: 1.3;
   text-align: center;
   cursor: pointer;
-  transition: background 0.2s, border-color 0.2s, box-shadow 0.2s, transform 0.1s;
+  transition: background 0.2s, border-color 0.2s, box-shadow 0.2s, transform 0.15s;
 }
-.botao:active { transform: translateY(1px); }
+.botao:hover { transform: translateY(-1px); }
+.botao:active { transform: translateY(0); }
 
 .botao-principal {
   background: var(--cor-primaria);
-  color: #fff;
-  box-shadow: 0 1px 2px rgba(33, 104, 116, 0.25);
+  color: var(--cor-sobre-primaria);
+  box-shadow: 0 1px 2px color-mix(in srgb, var(--cor-primaria-hover) 25%, transparent);
 }
-.botao-principal:hover { background: var(--cor-primaria-hover); }
+.botao-principal:hover {
+  background: var(--cor-primaria-hover);
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--cor-primaria-hover) 28%, transparent);
+}
 
 .botao-secundario {
   background: var(--cor-card);
   border-color: var(--cor-borda);
   color: var(--cor-texto);
 }
-.botao-secundario:hover { background: var(--cor-fundo); }
+.botao-secundario:hover { background: var(--cor-fundo); border-color: var(--cor-texto-secundario); }
 
 .aviso {
-  margin-top: 32px;
+  margin-top: 28px;
   font-size: 0.85rem;
   color: var(--cor-texto-secundario);
   max-width: 70ch;
 }
 
-/* ----- Responsivo: menu vira barra no topo ----- */
+/* ----- Responsivo ----- */
+@media (max-width: 1000px) {
+  .conteudo { padding: 32px 28px 48px; }
+}
+
+/* Menu vira barra no topo */
 @media (max-width: 800px) {
   .sidebar {
     position: static;
@@ -205,14 +227,17 @@ select:focus-visible, textarea:focus-visible {
     flex-direction: row;
     align-items: center;
     flex-wrap: wrap;
-    gap: 12px;
+    gap: 8px 16px;
     padding: 16px 20px;
+    overflow-y: visible;
     border-right: none;
     border-bottom: 1px solid var(--cor-borda);
   }
-  .menu { flex-direction: row; flex-wrap: wrap; }
+  .logo { padding-left: 0; }
+  .menu { flex-direction: row; flex-wrap: wrap; gap: 4px; }
+  .menu-link { padding: 8px 12px; }
   .lema { display: none; }
-  .conteudo { margin-left: 0; padding: 24px 20px; }
+  .conteudo { margin-left: 0; padding: 24px 20px 40px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

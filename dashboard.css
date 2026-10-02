@@ -4,7 +4,7 @@
 
 /* ----- Saudação ----- */
 .saudacao h1 { font-size: 2rem; font-weight: 700; letter-spacing: -0.02em; }
-.saudacao p { color: var(--cor-texto-secundario); margin-top: 4px; font-size: 1.1rem; }
+.saudacao p { color: var(--cor-texto-secundario); margin-top: 6px; font-size: 1.1rem; }
 
 /* ----- Cards de resumo ----- */
 /* Cada card tem uma faixa lateral colorida. A cor vem da variável --acento. */
@@ -12,7 +12,7 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 20px;
-  margin: 28px 0 44px;
+  margin: 28px 0 var(--espaco-secao);
 }
 .card-resumo {
   --acento: var(--cor-primaria);
@@ -22,8 +22,8 @@
   padding: 24px 24px 24px 28px;
   box-shadow: inset 4px 0 0 var(--acento), var(--sombra-card);
 }
-.resumo-numero { font-size: 2.5rem; font-weight: 700; line-height: 1; letter-spacing: -0.02em; }
-.resumo-texto { color: var(--cor-texto-secundario); font-size: 0.95rem; }
+.resumo-numero { font-size: 2.5rem; font-weight: 700; line-height: 1; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+.resumo-texto { color: var(--cor-texto-secundario); font-size: 0.9rem; line-height: 1.35; }
 .resumo-urgente { --acento: var(--cor-perigo); }
 .resumo-concluido { --acento: var(--cor-sucesso); }
 
@@ -37,7 +37,7 @@
   margin-bottom: 20px;
 }
 .atividades h2 { font-size: 1.4rem; font-weight: 600; }
-.subtitulo { color: var(--cor-texto-secundario); font-size: 0.95rem; }
+.subtitulo { margin-top: 2px; color: var(--cor-texto-secundario); font-size: 0.95rem; }
 
 .lista-atividades { display: flex; flex-direction: column; gap: 14px; }
 
@@ -59,8 +59,8 @@
   font-size: 1.1rem;
 }
 .atividade-info { flex: 1; min-width: 0; }
-.atividade-info h3 { font-size: 1.05rem; font-weight: 600; }
-.atividade-info p { color: var(--cor-texto-secundario); font-size: 0.9rem; }
+.atividade-info h3 { font-size: 1rem; font-weight: 600; }
+.atividade-info p { margin-top: 2px; color: var(--cor-texto-secundario); font-size: 0.875rem; }
 .atividade-descricao { margin-top: 4px; }
 
 /* Etiquetas de prioridade: a cor tem significado (vermelho = alta, amarelo = média, verde = baixa) */
@@ -69,6 +69,7 @@
   border-radius: 999px;
   font-size: 0.8rem;
   font-weight: 600;
+  letter-spacing: 0.01em;
   white-space: nowrap;
 }
 .prioridade-alta  { background: var(--cor-perigo-suave);  color: var(--cor-perigo-texto); }
@@ -80,8 +81,9 @@
 .destaque-pausa {
   position: relative;
   overflow: hidden;
-  margin-top: 48px;
+  margin-top: var(--espaco-secao);
   padding: 40px;
+  border: 1px solid color-mix(in srgb, var(--cor-primaria) 12%, transparent);
   border-radius: var(--raio-grande);
   background: var(--gradiente-pausa);
   display: flex;
@@ -99,21 +101,22 @@
   transform: translateY(-50%);
   pointer-events: none;
 }
-.destaque-pausa::before { width: 260px; height: 260px; right: -70px; border: 1.5px solid rgba(42, 127, 142, 0.16); }
-.destaque-pausa::after  { width: 170px; height: 170px; right: -25px; border: 1.5px solid rgba(76, 175, 142, 0.22); }
+.destaque-pausa::before { width: 260px; height: 260px; right: -70px; border: 1.5px solid color-mix(in srgb, var(--cor-primaria) 16%, transparent); }
+.destaque-pausa::after  { width: 170px; height: 170px; right: -25px; border: 1.5px solid color-mix(in srgb, var(--cor-sucesso) 22%, transparent); }
 .destaque-pausa > * { position: relative; z-index: 1; } /* texto e botão ficam acima dos círculos */
 
-.destaque-pausa h2 { font-size: 1.7rem; font-weight: 600; }
+.destaque-pausa h2 { font-size: 1.6rem; font-weight: 600; }
 .destaque-pausa p { color: var(--cor-texto-secundario); font-size: 1.05rem; margin-top: 4px; }
 
-.botao-pausa { background: var(--cor-primaria); color: #fff; padding: 14px 28px; }
+/* Botão de destaque: um pouco maior que os botões comuns */
+.botao-pausa { background: var(--cor-primaria); color: var(--cor-sobre-primaria); padding: 14px 28px; }
 .botao-pausa:hover { background: var(--cor-primaria-hover); }
 
 /* ----- Modal ----- */
 .modal-fundo {
   position: fixed;
   inset: 0;
-  background: rgba(30, 45, 61, 0.45);
+  background: var(--sobreposicao-modal);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -125,16 +128,17 @@
 .modal {
   background: var(--cor-card);
   border-radius: var(--raio-grande);
-  box-shadow: 0 20px 60px rgba(30, 45, 61, 0.2);
+  box-shadow: var(--sombra-modal);
   padding: 32px;
   width: 100%;
   max-width: 480px;
   max-height: 90vh;
   overflow-y: auto;
 }
-.modal h2 { margin-bottom: 20px; }
+.modal h2 { margin-bottom: 20px; font-size: 1.4rem; font-weight: 600; }
 
 .modal label { display: block; font-size: 0.9rem; font-weight: 500; margin-bottom: 14px; }
+.modal textarea { resize: vertical; }
 .modal input, .modal select, .modal textarea {
   display: block;
   width: 100%;
@@ -151,13 +155,36 @@
 .modal-botoes { display: flex; justify-content: flex-end; gap: 10px; margin-top: 8px; }
 
 /* ----- Responsivo ----- */
+
+/* Tablet: cards de resumo mais compactos e círculos do destaque menores (não cruzam o texto) */
+@media (max-width: 1000px) {
+  .resumo { gap: 14px; }
+  .card-resumo { padding: 20px 16px 20px 22px; }
+  .resumo-numero { font-size: 2.2rem; }
+  .destaque-pausa { padding: 32px; }
+  .destaque-pausa::before { width: 200px; height: 200px; right: -60px; top: -60px; transform: none; }
+  .destaque-pausa::after  { width: 120px; height: 120px; right: -20px; top: -20px; transform: none; }
+}
+
+/* Telas estreitas (uma coluna): cada card de resumo vira uma linha: número + descrição */
 @media (max-width: 800px) {
-  .resumo { grid-template-columns: 1fr; gap: 14px; margin-bottom: 36px; }
+  .resumo { grid-template-columns: 1fr; gap: 12px; margin-bottom: 32px; }
+  .card-resumo { flex-direction: row; align-items: center; gap: 16px; padding: 16px 20px 16px 24px; }
+  .resumo-numero { min-width: 1.4ch; font-size: 2rem; }
+  .resumo-texto { font-size: 0.95rem; }
   .atividade { flex-wrap: wrap; }
 }
 
+/* Celular */
 @media (max-width: 520px) {
   .saudacao h1 { font-size: 1.7rem; }
+
+  /* A etiqueta de prioridade passa para a linha de baixo, alinhada com o texto,
+     em vez de ficar por cima do título (só nos cards em que a etiqueta vem logo depois do texto) */
+  .atividade { padding: 18px 20px; row-gap: 10px; }
+  .atividade-info:has(+ .etiqueta) { flex: 1 1 calc(100% - 56px); } /* 56px = ícone (40) + espaço (16) */
+  .atividade > .etiqueta { margin-left: 56px; }
+
   .destaque-pausa { padding: 28px 24px; }
   .destaque-pausa h2 { font-size: 1.4rem; }
   .destaque-pausa .botao { width: 100%; }
