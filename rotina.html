@@ -55,8 +55,44 @@
       cursor: pointer;
     }
     .excluir:hover { color: var(--vermelho); text-decoration: underline; }
+    .retomar {
+      border: none;
+      background: none;
+      padding: 2px 4px;
+      font: inherit;
+      font-size: 0.8rem;
+      color: var(--texto-suave);
+      cursor: pointer;
+    }
+    .retomar:hover { color: var(--azul-esverdeado); text-decoration: underline; }
+    .atividade-lado-linha { flex-direction: row; align-items: center; gap: 8px; }
     .atividade.concluida { opacity: 0.6; box-shadow: none; }
     .atividade.concluida h3 { text-decoration: line-through; color: var(--texto-suave); }
+
+    /* Aviso com "Desfazer" */
+    .toast {
+      position: fixed; right: 24px; bottom: 24px; z-index: 20;
+      display: flex; align-items: center; gap: 16px;
+      max-width: 420px;
+      padding: 16px 20px;
+      border-radius: var(--raio);
+      background: var(--texto);
+      color: #fff;
+      box-shadow: 0 8px 24px rgba(30, 45, 61, 0.25);
+    }
+    .toast strong { display: block; }
+    .toast p { font-size: 0.9rem; opacity: 0.85; }
+    .toast button {
+      margin-left: auto;
+      padding: 6px 14px;
+      border: 1px solid rgba(255, 255, 255, 0.5);
+      border-radius: 10px;
+      background: transparent;
+      color: #fff;
+      font: inherit; font-weight: 600;
+      cursor: pointer;
+    }
+    .toast button:hover { background: rgba(255, 255, 255, 0.15); }
 
     /* Seção "Atividades concluídas" */
     .concluidas { margin-top: 48px; }
@@ -70,6 +106,7 @@
     @media (max-width: 800px) {
       .filtro-rotulo { width: 100%; }
       .atividade-lado { flex-direction: row; align-items: center; width: 100%; justify-content: space-between; }
+      .toast { left: 16px; right: 16px; bottom: 16px; max-width: none; }
     }
   </style>
 </head>
@@ -194,6 +231,15 @@
         </div>
       </form>
     </div>
+  </div>
+
+  <!-- AVISO: aparece por alguns segundos depois de concluir uma atividade -->
+  <div class="toast" id="aviso" role="status" aria-live="polite" hidden>
+    <div>
+      <strong>✓ Atividade concluída!</strong>
+      <p id="aviso-texto"></p>
+    </div>
+    <button type="button" id="botao-desfazer">Desfazer</button>
   </div>
 
   <script src="rotina.js"></script>

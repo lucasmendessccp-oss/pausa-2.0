@@ -1,20 +1,31 @@
 /* ===== ESTILOS DO DASHBOARD (index.html) ===== */
+/* Várias regras abaixo (cards de resumo, atividades, etiquetas e modal)
+   também são usadas por Minha rotina e Calendário. */
 
-.saudacao h1 { font-size: 2rem; }
-.saudacao p { color: var(--texto-suave); margin-top: 4px; font-size: 1.1rem; }
+/* ----- Saudação ----- */
+.saudacao h1 { font-size: 2rem; font-weight: 700; letter-spacing: -0.02em; }
+.saudacao p { color: var(--cor-texto-secundario); margin-top: 4px; font-size: 1.1rem; }
 
 /* ----- Cards de resumo ----- */
+/* Cada card tem uma faixa lateral colorida. A cor vem da variável --acento. */
 .resumo {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
-  margin: 28px 0 40px;
+  gap: 20px;
+  margin: 28px 0 44px;
 }
-.card-resumo { display: flex; flex-direction: column; gap: 4px; border-left: 5px solid var(--azul-esverdeado); }
-.resumo-numero { font-size: 2.4rem; font-weight: 700; line-height: 1; }
-.resumo-texto { color: var(--texto-suave); font-size: 0.95rem; }
-.resumo-urgente { border-left-color: var(--vermelho); }
-.resumo-concluido { border-left-color: var(--verde); }
+.card-resumo {
+  --acento: var(--cor-primaria);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 24px 24px 24px 28px;
+  box-shadow: inset 4px 0 0 var(--acento), var(--sombra-card);
+}
+.resumo-numero { font-size: 2.5rem; font-weight: 700; line-height: 1; letter-spacing: -0.02em; }
+.resumo-texto { color: var(--cor-texto-secundario); font-size: 0.95rem; }
+.resumo-urgente { --acento: var(--cor-perigo); }
+.resumo-concluido { --acento: var(--cor-sucesso); }
 
 /* ----- Próximas atividades ----- */
 .atividades-topo {
@@ -25,10 +36,10 @@
   flex-wrap: wrap;
   margin-bottom: 20px;
 }
-.atividades h2 { font-size: 1.4rem; }
-.subtitulo { color: var(--texto-suave); font-size: 0.95rem; }
+.atividades h2 { font-size: 1.4rem; font-weight: 600; }
+.subtitulo { color: var(--cor-texto-secundario); font-size: 0.95rem; }
 
-.lista-atividades { display: flex; flex-direction: column; gap: 12px; }
+.lista-atividades { display: flex; flex-direction: column; gap: 14px; }
 
 .atividade {
   display: flex;
@@ -36,12 +47,23 @@
   align-items: center;
   padding: 20px 24px;
 }
-.atividade-icone { font-size: 1.3rem; }
-.atividade-info { flex: 1; }
-.atividade-info h3 { font-size: 1.05rem; }
-.atividade-info p { color: var(--texto-suave); font-size: 0.9rem; }
+/* A bolinha de prioridade fica dentro de um círculo suave */
+.atividade-icone {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  background: var(--cor-fundo);
+  font-size: 1.1rem;
+}
+.atividade-info { flex: 1; min-width: 0; }
+.atividade-info h3 { font-size: 1.05rem; font-weight: 600; }
+.atividade-info p { color: var(--cor-texto-secundario); font-size: 0.9rem; }
 .atividade-descricao { margin-top: 4px; }
 
+/* Etiquetas de prioridade: a cor tem significado (vermelho = alta, amarelo = média, verde = baixa) */
 .etiqueta {
   padding: 4px 12px;
   border-radius: 999px;
@@ -49,26 +71,43 @@
   font-weight: 600;
   white-space: nowrap;
 }
-.prioridade-alta  { background: var(--vermelho-claro); color: var(--vermelho); }
-.prioridade-media { background: var(--amarelo-claro); color: #8a6a00; }
-.prioridade-baixa { background: var(--verde-claro); color: #2e7d5f; }
+.prioridade-alta  { background: var(--cor-perigo-suave);  color: var(--cor-perigo-texto); }
+.prioridade-media { background: var(--cor-atencao-suave); color: var(--cor-atencao-texto); }
+.prioridade-baixa { background: var(--cor-sucesso-suave); color: var(--cor-sucesso-texto); }
 
 /* ----- Destaque da área Pausa ----- */
+/* Calmo e diferente do resto da página; os círculos lembram a respiração */
 .destaque-pausa {
+  position: relative;
+  overflow: hidden;
   margin-top: 48px;
   padding: 40px;
-  border-radius: 24px;
-  background: linear-gradient(135deg, var(--azul-esverdeado-claro), var(--verde-claro));
+  border-radius: var(--raio-grande);
+  background: var(--gradiente-pausa);
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 24px;
   flex-wrap: wrap;
 }
+.destaque-pausa::before,
+.destaque-pausa::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  border-radius: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+.destaque-pausa::before { width: 260px; height: 260px; right: -70px; border: 1.5px solid rgba(42, 127, 142, 0.16); }
+.destaque-pausa::after  { width: 170px; height: 170px; right: -25px; border: 1.5px solid rgba(76, 175, 142, 0.22); }
+.destaque-pausa > * { position: relative; z-index: 1; } /* texto e botão ficam acima dos círculos */
+
 .destaque-pausa h2 { font-size: 1.7rem; font-weight: 600; }
-.destaque-pausa p { color: var(--texto-suave); font-size: 1.05rem; margin-top: 4px; }
-.botao-pausa { background: var(--azul-esverdeado); color: #fff; padding: 14px 28px; }
-.botao-pausa:hover { background: #216874; }
+.destaque-pausa p { color: var(--cor-texto-secundario); font-size: 1.05rem; margin-top: 4px; }
+
+.botao-pausa { background: var(--cor-primaria); color: #fff; padding: 14px 28px; }
+.botao-pausa:hover { background: var(--cor-primaria-hover); }
 
 /* ----- Modal ----- */
 .modal-fundo {
@@ -84,8 +123,9 @@
 .modal-fundo[hidden] { display: none; }
 
 .modal {
-  background: var(--branco);
-  border-radius: 20px;
+  background: var(--cor-card);
+  border-radius: var(--raio-grande);
+  box-shadow: 0 20px 60px rgba(30, 45, 61, 0.2);
   padding: 32px;
   width: 100%;
   max-width: 480px;
@@ -100,15 +140,25 @@
   width: 100%;
   margin-top: 6px;
   padding: 10px 12px;
-  border: 1px solid var(--borda);
-  border-radius: 10px;
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-botao);
   font: inherit;
-  background: var(--branco);
+  background: var(--cor-card);
+  transition: border-color 0.2s;
 }
+.modal input:hover, .modal select:hover, .modal textarea:hover { border-color: var(--cor-texto-secundario); }
 .linha { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .modal-botoes { display: flex; justify-content: flex-end; gap: 10px; margin-top: 8px; }
 
+/* ----- Responsivo ----- */
 @media (max-width: 800px) {
-  .resumo { grid-template-columns: 1fr; }
+  .resumo { grid-template-columns: 1fr; gap: 14px; margin-bottom: 36px; }
   .atividade { flex-wrap: wrap; }
+}
+
+@media (max-width: 520px) {
+  .saudacao h1 { font-size: 1.7rem; }
+  .destaque-pausa { padding: 28px 24px; }
+  .destaque-pausa h2 { font-size: 1.4rem; }
+  .destaque-pausa .botao { width: 100%; }
 }

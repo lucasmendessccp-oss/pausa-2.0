@@ -1,39 +1,82 @@
 /* ===== ESTILOS GLOBAIS (usados em todas as páginas) ===== */
+/* Identidade visual base do PAUSA. Dashboard, Minha rotina, Calendário e Pausa
+   devem usar as variáveis abaixo em vez de cores escritas à mão. */
 
 :root {
-  --verde: #4caf8e;
-  --verde-claro: #e6f4ee;
-  --azul-esverdeado: #2a7f8e;
-  --azul-esverdeado-claro: #e3f1f3;
-  --texto: #1e2d3d;
-  --texto-suave: #5b6b7a;
-  --fundo: #f6f8f8;
-  --branco: #ffffff;
-  --borda: #e3e9e9;
-  --vermelho: #d9534f;
-  --vermelho-claro: #fbeaea;
-  --amarelo: #e0a800;
-  --amarelo-claro: #fdf5dc;
-  --raio: 16px;
-  --sombra: 0 2px 10px rgba(30, 45, 61, 0.06);
+  /* --- Marca e estrutura (azul-esverdeado, a cor da área Pausa) --- */
+  --cor-primaria: #2a7f8e;        /* logo, botões principais, item ativo, foco */
+  --cor-primaria-hover: #216874;  /* hover e texto sobre fundo suave (contraste alto) */
+  --cor-primaria-suave: #e3f1f3;  /* fundos leves e item ativo do menu */
+
+  /* --- Sucesso e ações positivas (verde) --- */
+  --cor-sucesso: #4caf8e;
+  --cor-sucesso-suave: #e6f4ee;
+  --cor-sucesso-texto: #2a745a;   /* texto verde legível sobre fundo suave */
+
+  /* --- Atenção (amarelo): prioridade média --- */
+  --cor-atencao: #e0a800;
+  --cor-atencao-suave: #fdf5dc;
+  --cor-atencao-texto: #8a6a00;
+
+  /* --- Perigo (vermelho): prioridade alta, urgência, erro --- */
+  --cor-perigo: #d9534f;
+  --cor-perigo-suave: #fbeaea;
+  --cor-perigo-texto: #b23b37;
+
+  /* --- Neutros --- */
+  --cor-fundo: #f6f8f8;
+  --cor-card: #ffffff;
+  --cor-texto: #1e2d3d;
+  --cor-texto-secundario: #5b6b7a;
+  --cor-borda: #e3e9e9;
+
+  /* --- Forma e profundidade --- */
+  --raio-card: 18px;
+  --raio-grande: 24px;            /* modal e destaques */
+  --raio-botao: 12px;
+  --sombra-card: 0 1px 2px rgba(30, 45, 61, 0.04), 0 4px 16px rgba(30, 45, 61, 0.05);
+  --sombra-card-hover: 0 8px 24px rgba(30, 45, 61, 0.09);
+
+  /* --- Gradientes da identidade Pausa (círculo de respiração e destaques) --- */
+  --gradiente-respiracao: radial-gradient(circle at 35% 30%, #d9f0e6, #a9dac7 55%, #90c9d2);
+  --gradiente-pausa: linear-gradient(135deg, var(--cor-primaria-suave), var(--cor-sucesso-suave));
+
+  /* --- COMPATIBILIDADE: nomes antigos ainda usados por rotina.html, calendario.html e pausa.css.
+         Apontam para as variáveis novas. Apague cada linha quando a página que a usa for padronizada. --- */
+  --verde: var(--cor-sucesso);
+  --verde-claro: var(--cor-sucesso-suave);
+  --azul-esverdeado: var(--cor-primaria);
+  --azul-esverdeado-claro: var(--cor-primaria-suave);
+  --amarelo: var(--cor-atencao);
+  --amarelo-claro: var(--cor-atencao-suave);
+  --vermelho: var(--cor-perigo);
+  --vermelho-claro: var(--cor-perigo-suave);
+  --texto: var(--cor-texto);
+  --texto-suave: var(--cor-texto-secundario);
+  --fundo: var(--cor-fundo);
+  --branco: var(--cor-card);
+  --borda: var(--cor-borda);
+  --raio: var(--raio-card);
+  --sombra: var(--sombra-card);
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
   font-family: "Inter", system-ui, sans-serif;
-  background: var(--fundo);
-  color: var(--texto);
+  background: var(--cor-fundo);
+  color: var(--cor-texto);
   line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
 }
 
-h1, h2, h3 { line-height: 1.25; }
+h1, h2, h3 { line-height: 1.25; letter-spacing: -0.01em; }
 a { color: inherit; text-decoration: none; }
 
 /* Foco visível para navegação por teclado */
 a:focus-visible, button:focus-visible, input:focus-visible,
 select:focus-visible, textarea:focus-visible {
-  outline: 3px solid var(--azul-esverdeado);
+  outline: 3px solid var(--cor-primaria);
   outline-offset: 2px;
 }
 
@@ -41,37 +84,65 @@ select:focus-visible, textarea:focus-visible {
 .sidebar {
   position: fixed;
   top: 0; left: 0; bottom: 0;
-  width: 230px;
-  padding: 32px 20px;
-  background: var(--branco);
-  border-right: 1px solid var(--borda);
+  width: 230px;                   /* pausa.css usa 230px nas contas de centralização */
+  padding: 32px 20px 28px;
+  background: var(--cor-card);
+  border-right: 1px solid var(--cor-borda);
   display: flex;
   flex-direction: column;
   gap: 32px;
 }
 
+/* A marca ganha um pequeno círculo igual ao da respiração da área Pausa */
 .logo {
-  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-left: 4px;
+  font-size: 1.4rem;
   font-weight: 700;
-  letter-spacing: 0.08em;
-  color: var(--azul-esverdeado);
+  letter-spacing: 0.1em;
+  color: var(--cor-primaria);
+}
+.logo::before {
+  content: "";
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  background: var(--gradiente-respiracao);
+  box-shadow: 0 0 0 4px var(--cor-primaria-suave);
 }
 
 .menu { display: flex; flex-direction: column; gap: 4px; }
 
 .menu-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
   padding: 10px 14px;
-  border-radius: 10px;
-  color: var(--texto-suave);
+  border-radius: var(--raio-botao);
+  color: var(--cor-texto-secundario);
   font-weight: 500;
+  transition: background 0.2s, color 0.2s;
 }
-.menu-link:hover { background: var(--fundo); }
-.menu-link.ativo { background: var(--verde-claro); color: var(--texto); font-weight: 600; }
+/* Pequeno marcador (substitui ícones, sem mexer no HTML) */
+.menu-link::before {
+  content: "";
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--cor-texto-secundario);
+  opacity: 0.35;
+  transition: background 0.2s, opacity 0.2s;
+}
+.menu-link:hover { background: var(--cor-fundo); color: var(--cor-texto); }
+.menu-link.ativo { background: var(--cor-primaria-suave); color: var(--cor-primaria-hover); font-weight: 600; }
+.menu-link.ativo::before { background: var(--cor-primaria); opacity: 1; }
 
 .lema {
   margin-top: auto;
+  padding-top: 16px;
+  border-top: 1px solid var(--cor-borda);
   font-size: 0.85rem;
-  color: var(--texto-suave);
+  color: var(--cor-texto-secundario);
 }
 
 /* ----- Conteúdo principal ----- */
@@ -83,31 +154,46 @@ select:focus-visible, textarea:focus-visible {
 
 /* ----- Componentes reutilizáveis ----- */
 .card {
-  background: var(--branco);
-  border-radius: var(--raio);
-  box-shadow: var(--sombra);
+  background: var(--cor-card);
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-card);
+  box-shadow: var(--sombra-card);
   padding: 24px;
 }
 
+/* Botões: o mesmo tamanho para todos (a borda transparente evita diferença de altura) */
 .botao {
   display: inline-block;
   padding: 12px 22px;
-  border: none;
-  border-radius: 12px;
+  border: 1px solid transparent;
+  border-radius: var(--raio-botao);
   font: inherit;
   font-weight: 600;
+  line-height: 1.3;
+  text-align: center;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: background 0.2s, border-color 0.2s, box-shadow 0.2s, transform 0.1s;
 }
-.botao-principal { background: var(--verde); color: #fff; }
-.botao-principal:hover { background: #3d9a7c; }
-.botao-secundario { background: var(--fundo); color: var(--texto); }
-.botao-secundario:hover { background: var(--borda); }
+.botao:active { transform: translateY(1px); }
+
+.botao-principal {
+  background: var(--cor-primaria);
+  color: #fff;
+  box-shadow: 0 1px 2px rgba(33, 104, 116, 0.25);
+}
+.botao-principal:hover { background: var(--cor-primaria-hover); }
+
+.botao-secundario {
+  background: var(--cor-card);
+  border-color: var(--cor-borda);
+  color: var(--cor-texto);
+}
+.botao-secundario:hover { background: var(--cor-fundo); }
 
 .aviso {
   margin-top: 32px;
   font-size: 0.85rem;
-  color: var(--texto-suave);
+  color: var(--cor-texto-secundario);
   max-width: 70ch;
 }
 
@@ -122,7 +208,7 @@ select:focus-visible, textarea:focus-visible {
     gap: 12px;
     padding: 16px 20px;
     border-right: none;
-    border-bottom: 1px solid var(--borda);
+    border-bottom: 1px solid var(--cor-borda);
   }
   .menu { flex-direction: row; flex-wrap: wrap; }
   .lema { display: none; }

@@ -73,6 +73,9 @@ const vazioConcluidas = document.getElementById("vazio-concluidas");
 const campoBusca = document.getElementById("campo-busca");
 const botoesFiltro = document.querySelectorAll("[data-filtro]");
 const botaoAdicionar = document.getElementById("botao-adicionar");
+const aviso = document.getElementById("aviso");
+const avisoTexto = document.getElementById("aviso-texto");
+const botaoDesfazer = document.getElementById("botao-desfazer");
 const modal = document.getElementById("modal");
 const formulario = document.getElementById("form-atividade");
 
@@ -247,7 +250,16 @@ function criarCardConcluido(atividade) {
   info.append(titulo, detalhes);
 
   const lado = document.createElement("div");
-  lado.className = "atividade-lado";
+  lado.className = "atividade-lado atividade-lado-linha"; // botões lado a lado
+
+  // Retomar: devolve a atividade (a mesma, não uma cópia) para a lista de pendentes
+  const retomar = document.createElement("button");
+  retomar.type = "button";
+  retomar.className = "retomar";
+  retomar.textContent = "Retomar";
+  retomar.setAttribute("aria-label", "Retomar atividade: " + atividade.titulo);
+  retomar.addEventListener("click", function () { reabrirAtividade(atividade.id); });
+
   const excluir = document.createElement("button");
   excluir.type = "button";
   excluir.className = "excluir";
@@ -255,7 +267,7 @@ function criarCardConcluido(atividade) {
   excluir.setAttribute("aria-label", "Excluir atividade concluída: " + atividade.titulo);
   // Reaproveita a mesma função de excluir das pendentes (ela pede confirmação)
   excluir.addEventListener("click", function () { excluirAtividade(atividade.id); });
-  lado.append(excluir);
+  lado.append(retomar, excluir);
 
   card.append(icone, info, lado);
   return card;
@@ -331,15 +343,63 @@ function concluirAtividade(id) {
   atividade.dataConclusao = dataDeHoje();
   atualizarTela();
 
-  // O card sumiu da lista, então levamos o foco para um botão fixo (ajuda quem usa teclado)
-  botaoAdicionar.focus();
+  // Avisa e oferece "Desfazer" por alguns segundos (sem janela de confirmação, para ser rápido)
+  mostrarAviso(atividade);
+  botaoDesfazer.focus(); // o card sumiu da lista; levar o foco ao "Desfazer" ajuda quem usa teclado
 }
+
+// Volta uma atividade concluída para pendente. Usada por "Desfazer" e por "Retomar".
+// Não cria uma atividade nova: é o MESMO objeto da lista, só muda o estado.
+// FUTURO (banco de dados): seria um UPDATE na mesma linha, com status = "pendente"
+// e data_conclusao = NULL (nunca um INSERT).
+function reabrirAtividade(id) {
+  const atividade = atividades.find(function (a) { return a.id === id; });
+  if (!atividade) return; // já foi excluída: não há o que reabrir
+
+  atividade.concluida = false;
+  atividade.dataConclusao = null;
+  if (idDoAviso === id) esconderAviso();
+  atualizarTela();
+  focarAtividade(id);
+}
+
+// Leva o foco ao checkbox da atividade (se ela está visível na lista) ou ao botão de adicionar
+function focarAtividade(id) {
+  const caixa = document.querySelector('[data-id="' + id + '"] .concluir');
+  (caixa || botaoAdicionar).focus();
+}
+
+// ----- AVISO COM "DESFAZER" (aparece depois de concluir) -----
+const DURACAO_AVISO = 7000; // por quanto tempo o "Desfazer" fica disponível (em milissegundos)
+let idDoAviso = null;       // id da atividade a que o aviso se refere
+let relogioDoAviso = null;  // guarda o temporizador para poder cancelá-lo
+
+function mostrarAviso(atividade) {
+  idDoAviso = atividade.id;
+  avisoTexto.textContent = '"' + atividade.titulo + '" foi concluída.';
+  aviso.hidden = false;
+  clearTimeout(relogioDoAviso); // se já havia um aviso aberto, a contagem recomeça
+  relogioDoAviso = setTimeout(esconderAviso, DURACAO_AVISO);
+}
+
+function esconderAviso() {
+  clearTimeout(relogioDoAviso);
+  aviso.hidden = true;
+  idDoAviso = null;
+}
+
+botaoDesfazer.addEventListener("click", function () {
+  const id = idDoAviso;
+  esconderAviso();
+  reabrirAtividade(id);
+});
 
 // Exclui pendente ou concluída: remove da lista e os contadores se ajustam sozinhos
 function excluirAtividade(id) {
   if (!window.confirm("Tem certeza que deseja excluir esta atividade?")) return;
 
   atividades = atividades.filter(function (a) { return a.id !== id; });
+  if (idDoAviso === id) esconderAviso(); // não faz sentido oferecer "Desfazer" de algo excluído
   atualizarTela();
   botaoAdicionar.focus();
 }
