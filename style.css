@@ -131,7 +131,6 @@ select:focus-visible, textarea:focus-visible {
   padding: 11px 14px;
   border-radius: var(--raio-botao);
   color: var(--cor-texto-secundario);
-  font-size: 0.95rem;
   font-weight: 500;
   transition: background 0.2s, color 0.2s;
 }
@@ -145,6 +144,7 @@ select:focus-visible, textarea:focus-visible {
   transition: background 0.2s, opacity 0.2s;
 }
 .menu-link:hover { background: var(--cor-fundo); color: var(--cor-texto); }
+.menu-link:focus-visible { outline-offset: 0; }
 .menu-link.ativo { background: var(--cor-primaria-suave); color: var(--cor-primaria-hover); font-weight: 600; }
 .menu-link.ativo::before { background: var(--cor-primaria); opacity: 1; }
 
@@ -152,7 +152,7 @@ select:focus-visible, textarea:focus-visible {
   margin-top: auto;
   padding-top: 16px;
   border-top: 1px solid var(--cor-borda);
-  font-size: 0.85rem;
+  font-size: 0.875rem;
   color: var(--cor-texto-secundario);
 }
 
@@ -209,7 +209,7 @@ select:focus-visible, textarea:focus-visible {
 
 .aviso {
   margin-top: 28px;
-  font-size: 0.85rem;
+  font-size: 0.875rem;
   color: var(--cor-texto-secundario);
   max-width: 70ch;
 }
@@ -235,9 +235,14 @@ select:focus-visible, textarea:focus-visible {
   }
   .logo { padding-left: 0; }
   .menu { flex-direction: row; flex-wrap: wrap; gap: 4px; }
-  .menu-link { padding: 8px 12px; }
+  .menu-link { padding: 10px 12px; }
   .lema { display: none; }
   .conteudo { margin-left: 0; padding: 24px 20px 40px; }
+}
+
+/* Celular: o menu fica em duas colunas, para os itens não ficarem desalinhados */
+@media (max-width: 520px) {
+  .menu { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); width: 100%; }
 }
 
 @media (prefers-reduced-motion: reduce) {

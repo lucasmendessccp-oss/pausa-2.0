@@ -23,7 +23,7 @@
   box-shadow: inset 4px 0 0 var(--acento), var(--sombra-card);
 }
 .resumo-numero { font-size: 2.5rem; font-weight: 700; line-height: 1; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
-.resumo-texto { color: var(--cor-texto-secundario); font-size: 0.9rem; line-height: 1.35; }
+.resumo-texto { color: var(--cor-texto-secundario); font-size: 0.875rem; line-height: 1.35; }
 .resumo-urgente { --acento: var(--cor-perigo); }
 .resumo-concluido { --acento: var(--cor-sucesso); }
 
@@ -37,7 +37,7 @@
   margin-bottom: 20px;
 }
 .atividades h2 { font-size: 1.4rem; font-weight: 600; }
-.subtitulo { margin-top: 2px; color: var(--cor-texto-secundario); font-size: 0.95rem; }
+.subtitulo { margin-top: 2px; color: var(--cor-texto-secundario); font-size: 1rem; }
 
 .lista-atividades { display: flex; flex-direction: column; gap: 14px; }
 
@@ -106,7 +106,7 @@
 .destaque-pausa > * { position: relative; z-index: 1; } /* texto e botão ficam acima dos círculos */
 
 .destaque-pausa h2 { font-size: 1.6rem; font-weight: 600; }
-.destaque-pausa p { color: var(--cor-texto-secundario); font-size: 1.05rem; margin-top: 4px; }
+.destaque-pausa p { color: var(--cor-texto-secundario); font-size: 1.1rem; margin-top: 4px; }
 
 /* Botão de destaque: um pouco maior que os botões comuns */
 .botao-pausa { background: var(--cor-primaria); color: var(--cor-sobre-primaria); padding: 14px 28px; }
@@ -137,7 +137,7 @@
 }
 .modal h2 { margin-bottom: 20px; font-size: 1.4rem; font-weight: 600; }
 
-.modal label { display: block; font-size: 0.9rem; font-weight: 500; margin-bottom: 14px; }
+.modal label { display: block; font-size: 0.875rem; font-weight: 500; margin-bottom: 14px; }
 .modal textarea { resize: vertical; }
 .modal input, .modal select, .modal textarea {
   display: block;
@@ -171,7 +171,7 @@
   .resumo { grid-template-columns: 1fr; gap: 12px; margin-bottom: 32px; }
   .card-resumo { flex-direction: row; align-items: center; gap: 16px; padding: 16px 20px 16px 24px; }
   .resumo-numero { min-width: 1.4ch; font-size: 2rem; }
-  .resumo-texto { font-size: 0.95rem; }
+  .resumo-texto { font-size: 1rem; }
   .atividade { flex-wrap: wrap; }
 }
 
