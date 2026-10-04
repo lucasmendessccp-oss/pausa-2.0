@@ -1,0 +1,166 @@
+/* ===== CALENDÁRIO (calendario.html) ===== */
+/* Usa style.css (base, botões, cards) e dashboard.css (cabeçalho, etiquetas de prioridade e modal).
+   Aqui fica só o que é específico desta página. As classes abaixo são criadas pelo calendario.js:
+   não renomeie sem ajustar o JavaScript. */
+
+.conteudo-calendario { max-width: 1180px; }
+.cabecalho-calendario { margin-bottom: 24px; }
+
+/* ----- Filtros (mesmo estilo da Minha rotina) ----- */
+.filtros-cal { display: flex; flex-wrap: wrap; gap: 14px 40px; padding: 16px 24px; margin-bottom: 24px; }
+.filtro-grupo { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.filtro-rotulo { min-width: 80px; font-size: 0.875rem; font-weight: 600; color: var(--cor-texto-secundario); }
+.chip {
+  padding: 6px 16px;
+  border: 1px solid var(--cor-borda);
+  border-radius: 999px;
+  background: var(--cor-card);
+  font: inherit;
+  font-size: 0.875rem;
+  color: var(--cor-texto);
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s, color 0.2s;
+}
+.chip:hover { background: var(--cor-fundo); border-color: var(--cor-texto-secundario); }
+/* Filtro escolhido: mesmo estilo do item ativo do menu (fundo suave + azul-esverdeado) */
+.chip[aria-pressed="true"] {
+  background: var(--cor-primaria-suave);
+  border-color: var(--cor-primaria);
+  color: var(--cor-primaria-hover);
+}
+
+/* ----- Calendário + painel lateral ----- */
+/* minmax(0, 1fr) deixa a coluna encolher; com só "1fr" ela nunca ficava menor que a barra do mês
+   e empurrava a página para o lado em telas estreitas */
+.layout-calendario { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 24px; align-items: start; }
+
+.calendario { padding: 24px; }
+
+.cal-barra { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+.cal-titulo { flex: 0 1 auto; min-width: 0; padding: 0 8px; text-align: center; font-size: 1.35rem; font-weight: 600; }
+.cal-seta {
+  flex-shrink: 0;
+  width: 40px; height: 40px;
+  border: 1px solid var(--cor-borda);
+  border-radius: 50%;
+  background: var(--cor-card);
+  font: inherit; font-size: 1.1rem;
+  color: var(--cor-texto);
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+}
+.cal-seta:hover { background: var(--cor-fundo); border-color: var(--cor-texto-secundario); }
+.cal-hoje { margin-left: auto; flex-shrink: 0; padding: 8px 18px; }
+
+.cal-semana, .cal-grade { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px; }
+.cal-semana { margin-bottom: 8px; text-align: center; font-size: 0.8rem; font-weight: 600; color: var(--cor-texto-secundario); }
+
+/* Cada dia é um botão */
+.dia {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 8px;
+  min-height: 84px;
+  padding: 8px;
+  border: 2px solid transparent;
+  border-radius: var(--raio-botao);
+  background: var(--cor-fundo);
+  font: inherit;
+  color: var(--cor-texto);
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+}
+.dia:hover { background: var(--cor-primaria-suave); border-color: color-mix(in srgb, var(--cor-primaria) 30%, transparent); }
+.dia-numero {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 26px; height: 26px;
+  border-radius: 50%;
+  font-size: 0.9rem; font-weight: 600;
+}
+/* Dias de outros meses: sem fundo e com número mais discreto (sem opacidade, para manter o contraste) */
+.fora-do-mes { background: transparent; }
+.fora-do-mes .dia-numero { font-weight: 500; color: var(--cor-texto-secundario); }
+/* Hoje: número dentro de um círculo. Selecionado: borda e fundo azul-esverdeados */
+.hoje .dia-numero { background: var(--cor-primaria); color: var(--cor-sobre-primaria); }
+.selecionado, .selecionado:hover { border-color: var(--cor-primaria); background: var(--cor-primaria-suave); }
+
+/* Indicadores: cada bolinha é uma atividade (a prioridade também está escrita no painel do dia) */
+.pontos { display: flex; flex-wrap: wrap; gap: 4px; }
+.ponto { display: inline-block; width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.ponto-alta { background: var(--cor-perigo); }
+.ponto-media { background: var(--cor-atencao); }
+.ponto-baixa { background: var(--cor-sucesso); }
+.pontos-mais { font-size: 0.75rem; font-weight: 600; line-height: 10px; color: var(--cor-texto-secundario); }
+
+.legenda {
+  display: flex; flex-wrap: wrap; gap: 8px 20px;
+  margin-top: 20px; padding-top: 16px;
+  border-top: 1px solid var(--cor-borda);
+  font-size: 0.875rem;
+  color: var(--cor-texto-secundario);
+}
+.legenda span { display: inline-flex; align-items: center; gap: 8px; }
+
+/* ----- Painel do dia ----- */
+.painel-dia { padding: 24px; }
+.painel-dia h2 { font-size: 1.3rem; font-weight: 600; }
+.painel-contagem { margin-bottom: 8px; color: var(--cor-texto-secundario); font-size: 0.875rem; }
+.painel-vazio { margin: 12px 0 20px; color: var(--cor-texto-secundario); }
+.painel-dia .botao { width: 100%; margin-top: 16px; }
+
+.item-dia { display: flex; gap: 12px; padding: 14px 0; border-top: 1px solid var(--cor-borda); }
+.item-dia .ponto { margin-top: 6px; }
+.item-corpo { flex: 1; min-width: 0; }
+.item-topo { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+.item-topo h3 { font-size: 1rem; font-weight: 600; overflow-wrap: anywhere; }
+.item-meta, .item-descricao { color: var(--cor-texto-secundario); font-size: 0.875rem; overflow-wrap: anywhere; }
+.item-descricao { margin-top: 4px; }
+
+/* ----- Resumo do mês ----- */
+.resumo-mes { margin-top: var(--espaco-secao); padding: 24px; }
+.resumo-mes h2 { margin-bottom: 16px; font-size: 1.2rem; font-weight: 600; }
+.resumo-itens { display: flex; flex-wrap: wrap; gap: 16px 40px; }
+.estatistica strong { display: block; font-size: 1.8rem; font-weight: 700; line-height: 1.1; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+.estatistica span { font-size: 0.875rem; color: var(--cor-texto-secundario); }
+
+/* ----- Mensagem do PAUSA ----- */
+.mensagem-pausa {
+  margin-top: 24px;
+  padding: 28px 32px;
+  border: 1px solid color-mix(in srgb, var(--cor-primaria) 12%, transparent);
+  border-radius: var(--raio-grande);
+  background: var(--gradiente-pausa);
+}
+.mensagem-rotulo { margin-bottom: 6px; font-size: 0.8rem; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--cor-primaria-hover); }
+.mensagem-pausa h2 { font-size: 1.3rem; font-weight: 600; }
+.mensagem-pausa p.mensagem-texto { margin-top: 4px; color: var(--cor-texto-secundario); }
+
+/* ----- Telas menores ----- */
+@media (max-width: 1200px) {
+  .layout-calendario { grid-template-columns: minmax(0, 1fr); }
+}
+
+@media (max-width: 800px) {
+  .calendario { padding: 16px; }
+  .cal-grade, .cal-semana { gap: 3px; }
+  .dia { min-height: 62px; padding: 5px; gap: 4px; border-radius: 10px; }
+  .dia-numero { min-width: 24px; height: 24px; font-size: 0.85rem; }
+  .ponto { width: 8px; height: 8px; }
+  .filtro-rotulo { width: 100%; }
+  .chip { padding: 8px 16px; }
+  .painel-dia, .resumo-mes { padding: 20px; }
+}
+
+@media (max-width: 520px) {
+  .filtros-cal { padding: 16px; }
+  .cal-barra { gap: 8px; }
+  .cal-titulo { flex: 1 1 0; padding: 0; font-size: 1.1rem; line-height: 1.2; text-wrap: balance; }
+  .cal-seta { width: 36px; height: 36px; }
+  .cal-hoje { padding: 6px 12px; }
+  .calendario { padding: 12px; }
+  .cal-grade, .cal-semana { gap: 2px; }
+  .dia { min-height: 54px; padding: 4px 2px; align-items: center; }
+  .dia-numero { min-width: 22px; height: 22px; font-size: 0.8rem; }
+  .pontos { justify-content: center; gap: 3px; }
+  .ponto { width: 7px; height: 7px; }
+  .mensagem-pausa { padding: 24px 20px; }
+}
