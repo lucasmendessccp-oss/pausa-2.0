@@ -116,11 +116,34 @@
 .item-descricao { margin-top: 4px; }
 
 /* ----- Resumo do mês ----- */
+/* Título em cima, separado por uma linha; abaixo, seis indicadores lado a lado com divisórias.
+   O calendario.js cria os indicadores sempre nesta ordem: total, provas, trabalhos,
+   projetos, estudos e alta prioridade (por isso :first-child e :last-child abaixo). */
 .resumo-mes { margin-top: var(--espaco-secao); padding: 24px; }
-.resumo-mes h2 { margin-bottom: 16px; font-size: 1.2rem; font-weight: 600; }
-.resumo-itens { display: flex; flex-wrap: wrap; gap: 16px 40px; }
-.estatistica strong { display: block; font-size: 1.8rem; font-weight: 700; line-height: 1.1; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
-.estatistica span { font-size: 0.875rem; color: var(--cor-texto-secundario); }
+.resumo-mes h2 {
+  margin-bottom: 20px; padding-bottom: 16px;
+  border-bottom: 1px solid var(--cor-borda);
+  font-size: 1.2rem; font-weight: 600;
+}
+.resumo-itens { display: grid; grid-template-columns: 1.4fr repeat(4, minmax(0, 1fr)) 1.5fr; }
+
+/* Todas as células têm a mesma altura (as divisórias ficam alinhadas) e o conteúdo fica encostado embaixo */
+.estatistica { display: flex; flex-direction: column; justify-content: flex-end; padding: 0 16px; border-left: 1px solid var(--cor-borda); }
+.estatistica:first-child { padding-left: 0; border-left: 0; }
+.estatistica:last-child { padding-right: 0; }
+.estatistica strong { display: block; font-size: 1.9rem; font-weight: 700; line-height: 1.1; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+.estatistica:first-child strong { font-size: 2.5rem; }    /* o total é o número principal */
+.estatistica span { display: block; margin-top: 6px; font-size: 0.875rem; line-height: 1.3; color: var(--cor-texto-secundario); text-wrap: balance; }
+
+/* Alta prioridade: mesma bolinha vermelha do calendário, em tamanho pequeno (o texto continua escrito) */
+.estatistica:last-child span::before {
+  content: "";
+  display: inline-block;
+  width: 8px; height: 8px;
+  margin-right: 6px;
+  border-radius: 50%;
+  background: var(--cor-perigo);
+}
 
 /* ----- Mensagem do PAUSA ----- */
 .mensagem-pausa {
@@ -137,6 +160,16 @@
 /* ----- Telas menores ----- */
 @media (max-width: 1200px) {
   .layout-calendario { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* Resumo mensal: abaixo de 1100 px os seis indicadores passam a 2 linhas de 3 (em uma linha o rótulo "de alta prioridade" não cabe) */
+@media (max-width: 1100px) {
+  .resumo-itens { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .estatistica { justify-content: flex-start; padding: 0 14px; }  /* em linhas, os números ficam alinhados no topo */
+  .estatistica:nth-child(3n + 1) { padding-left: 0; border-left: 0; }
+  .estatistica:nth-child(3n) { padding-right: 0; }
+  .estatistica:nth-child(n + 4) { margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--cor-borda); }
+  .estatistica:first-child strong { font-size: 2.2rem; }
 }
 
 @media (max-width: 800px) {
@@ -163,4 +196,13 @@
   .pontos { justify-content: center; gap: 3px; }
   .ponto { width: 7px; height: 7px; }
   .mensagem-pausa { padding: 24px 20px; }
+  .estatistica { padding: 0 10px; }
+  .estatistica strong { font-size: 1.6rem; }
+  .estatistica:first-child strong { font-size: 2rem; }
+}
+
+/* Celulares muito estreitos (320 px): rótulos um pouco menores para caberem nas 3 colunas */
+@media (max-width: 380px) {
+  .estatistica { padding: 0 8px; }
+  .estatistica span { font-size: 0.8125rem; }
 }

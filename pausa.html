@@ -28,18 +28,17 @@
     <!-- TELA INICIAL: cabeçalho + três opções -->
     <div id="inicio">
       <div class="pausa-hero">
-      <header class="pausa-topo">
-        <h1>Está tudo bem parar.</h1>
-        <p class="pausa-subtitulo">Você não precisa resolver tudo de uma vez.</p>
-        <p>Escolha alguns minutos para respirar, desacelerar e voltar à sua rotina com mais calma.</p>
-      </header>
+        <header class="pausa-topo">
+          <h1>Está tudo bem parar.</h1>
+          <p class="pausa-subtitulo">Você não precisa resolver tudo de uma vez.</p>
+          <p>Escolha alguns minutos para respirar, desacelerar e voltar à sua rotina com mais calma.</p>
+        </header>
+        <!-- Elemento decorativo: anéis e um núcleo que "respira" bem devagar -->
         <div class="deco" aria-hidden="true">
           <span class="deco-anel deco-anel-1"></span>
           <span class="deco-anel deco-anel-2"></span>
           <span class="deco-anel deco-anel-3"></span>
           <span class="deco-nucleo"></span>
-          <span class="deco-bolha deco-bolha-1"></span>
-          <span class="deco-bolha deco-bolha-2"></span>
         </div>
       </div>
 
@@ -47,21 +46,24 @@
         <article class="card opcao">
           <span class="opcao-icone" aria-hidden="true">🌬️</span>
           <h2>Respirar</h2>
-          <p>Um exercício simples de respiração guiada para desacelerar por alguns minutos.</p>
+          <p class="opcao-lema">Desacelere por alguns minutos.</p>
+          <p class="opcao-descricao">Uma respiração guiada para diminuir o ritmo e prestar atenção ao momento.</p>
           <button class="botao botao-principal" data-abrir="respirar">Começar</button>
         </article>
 
         <article class="card opcao">
           <span class="opcao-icone" aria-hidden="true">🧘</span>
           <h2>Relaxar</h2>
-          <p>Afaste-se por alguns instantes das tarefas e permita-se descansar.</p>
+          <p class="opcao-lema">Dê um descanso à cabeça.</p>
+          <p class="opcao-descricao">Frases tranquilas e uma animação suave para se afastar das tarefas.</p>
           <button class="botao botao-principal" data-abrir="relaxar">Relaxar</button>
         </article>
 
         <article class="card opcao">
           <span class="opcao-icone" aria-hidden="true">⏱️</span>
           <h2>Timer</h2>
-          <p>Escolha quanto tempo você quer reservar para sua pausa.</p>
+          <p class="opcao-lema">Reserve um tempo para você.</p>
+          <p class="opcao-descricao">Escolha alguns minutos e deixe as tarefas de lado durante sua pausa.</p>
           <button class="botao botao-principal" data-abrir="timer">Escolher tempo</button>
         </article>
       </section>
@@ -69,95 +71,100 @@
 
     <!-- ÁREA DAS EXPERIÊNCIAS (só aparece depois de escolher uma opção) -->
     <div id="sessao" hidden>
-     <div class="sessao-layout">
+      <div class="sessao-layout">
 
-      <!-- RESPIRAR -->
-      <section class="tela tela-centro" id="tela-respirar" hidden>
-        <div id="respirar-ativo">
-          <div class="respiracao-palco">
-            <div class="circulo" id="circulo"></div>
-            <p class="respiracao-texto" id="respiracao-texto" aria-live="polite">Prepare-se...</p>
+        <!-- RESPIRAR -->
+        <section class="tela" id="tela-respirar" hidden>
+          <div id="respirar-ativo">
+            <div class="respiracao-palco">
+              <div class="circulo" id="circulo"></div>
+              <p class="respiracao-texto" id="respiracao-texto" aria-live="polite">Prepare-se...</p>
+            </div>
+            <p class="ciclo" id="ciclo">&nbsp;</p>
+            <button class="botao botao-secundario" data-acao="voltar">Encerrar pausa</button>
           </div>
-          <p class="ciclo" id="ciclo">&nbsp;</p>
-          <button class="botao botao-secundario" data-acao="voltar">Encerrar pausa</button>
-        </div>
 
-        <div id="respirar-fim" hidden>
-          <h2 id="respirar-fim-titulo">Você terminou sua pausa.</h2>
-          <div id="fim-pergunta">
-            <p>Como está se sentindo agora?</p>
-            <div class="sentimentos">
-              <button class="botao botao-secundario" data-sentimento>😣 Ainda sobrecarregado</button>
-              <button class="botao botao-secundario" data-sentimento>😐 Um pouco melhor</button>
-              <button class="botao botao-secundario" data-sentimento>🙂 Estou melhor</button>
+          <div id="respirar-fim" hidden>
+            <h2 id="respirar-fim-titulo">Você terminou sua pausa.</h2>
+            <div id="fim-pergunta">
+              <p class="tela-texto">Como está se sentindo agora?</p>
+              <div class="sentimentos">
+                <button class="botao botao-secundario" data-sentimento>😣 Ainda sobrecarregado</button>
+                <button class="botao botao-secundario" data-sentimento>😐 Um pouco melhor</button>
+                <button class="botao botao-secundario" data-sentimento>🙂 Estou melhor</button>
+              </div>
+            </div>
+            <div id="fim-obrigado" hidden>
+              <p class="tela-texto">Obrigado por reservar alguns minutos para você.</p>
+              <a href="index.html" class="botao botao-principal">Voltar para minha rotina</a>
             </div>
           </div>
-          <div id="fim-obrigado" hidden>
-            <p>Obrigado por reservar alguns minutos para você.</p>
+        </section>
+
+        <!-- TIMER -->
+        <section class="tela" id="tela-timer" hidden>
+          <div id="timer-escolha">
+            <h2>Quanto tempo você quer reservar?</h2>
+            <div class="tempos">
+              <button class="botao tempo-opcao" data-minutos="2">2 minutos</button>
+              <button class="botao tempo-opcao" data-minutos="5">5 minutos</button>
+              <button class="botao tempo-opcao" data-minutos="10">10 minutos</button>
+            </div>
+            <button class="botao botao-secundario" data-acao="voltar">Voltar</button>
+          </div>
+
+          <div id="timer-andamento" hidden>
+            <!-- A contagem fica no centro de anéis suaves (decoração, só visual) -->
+            <div class="palco-timer">
+              <div class="deco deco-timer" aria-hidden="true">
+                <span class="deco-anel deco-anel-1"></span>
+                <span class="deco-anel deco-anel-2"></span>
+                <span class="deco-anel deco-anel-3"></span>
+              </div>
+              <p class="contagem" id="timer-contagem" role="timer">05:00</p>
+            </div>
+            <p class="mensagem" id="timer-mensagem">Esse momento é seu.</p>
+            <button class="botao botao-secundario" data-acao="voltar">Encerrar pausa</button>
+          </div>
+
+          <div id="timer-fim" hidden>
+            <h2>Sua pausa terminou.</h2>
+            <p class="tela-texto">Você pode voltar quando se sentir pronto.</p>
             <a href="index.html" class="botao botao-principal">Voltar para minha rotina</a>
           </div>
-        </div>
-      </section>
+        </section>
 
-      <!-- TIMER -->
-      <section class="tela" id="tela-timer" hidden>
-        <div id="timer-escolha">
-          <h2>Quanto tempo você quer reservar?</h2>
-          <div class="tempos">
-            <button class="botao botao-principal" data-minutos="2">2 minutos</button>
-            <button class="botao botao-principal" data-minutos="5">5 minutos</button>
-            <button class="botao botao-principal" data-minutos="10">10 minutos</button>
-          </div>
-          <button class="botao botao-secundario" data-acao="voltar">Voltar</button>
-        </div>
+        <!-- RELAXAR -->
+        <section class="tela" id="tela-relaxar" hidden>
+          <div id="relaxar-ativo">
+            <!-- Ondas suaves (decoração) com a frase no centro -->
+            <div class="relaxar-cena">
+              <div class="relaxar-palco" aria-hidden="true">
+                <span class="onda onda-1"></span>
+                <span class="onda onda-2"></span>
+                <span class="onda onda-3"></span>
+              </div>
+              <p class="relaxar-frase" id="relaxar-frase" aria-live="polite">Afaste-se por alguns instantes.</p>
+            </div>
 
-        <div id="timer-andamento" hidden>
-          <p class="contagem" id="timer-contagem" role="timer">05:00</p>
-          <p class="mensagem" id="timer-mensagem">Esse momento é seu.</p>
-          <button class="botao botao-secundario" data-acao="voltar">Encerrar pausa</button>
-        </div>
+            <div class="relaxar-timer" role="group" aria-label="Timer opcional">
+              <span>Timer opcional:</span>
+              <button class="chip" data-relaxar-minutos="1" aria-pressed="false">1 min</button>
+              <button class="chip" data-relaxar-minutos="2" aria-pressed="false">2 min</button>
+              <span class="relaxar-contagem" id="relaxar-contagem" hidden></span>
+            </div>
 
-        <div id="timer-fim" hidden>
-          <h2>Sua pausa terminou.</h2>
-          <p>Você pode voltar quando se sentir pronto.</p>
-          <a href="index.html" class="botao botao-principal">Voltar para minha rotina</a>
-        </div>
-      </section>
-
-      <!-- RELAXAR -->
-      <section class="tela tela-centro" id="tela-relaxar" hidden>
-        <div id="relaxar-ativo">
-          <div class="relaxar-palco" aria-hidden="true">
-            <span class="onda onda-1"></span>
-            <span class="onda onda-2"></span>
-          </div>
-          <p class="relaxar-frase" id="relaxar-frase" aria-live="polite">Afaste-se por alguns instantes.</p>
-
-          <div class="relaxar-timer">
-            <span>Timer opcional:</span>
-            <button class="chip" data-relaxar-minutos="1" aria-pressed="false">1 min</button>
-            <button class="chip" data-relaxar-minutos="2" aria-pressed="false">2 min</button>
-            <span class="relaxar-contagem" id="relaxar-contagem" hidden></span>
+            <button class="botao botao-secundario" data-acao="voltar">Encerrar pausa</button>
           </div>
 
-          <button class="botao botao-secundario" data-acao="voltar">Encerrar pausa</button>
-        </div>
+          <div id="relaxar-fim" hidden>
+            <h2>Sua pausa terminou.</h2>
+            <p class="tela-texto">Você pode voltar quando se sentir pronto.</p>
+            <a href="index.html" class="botao botao-principal">Voltar para minha rotina</a>
+          </div>
+        </section>
 
-        <div id="relaxar-fim" hidden>
-          <h2>Sua pausa terminou.</h2>
-          <p>Você pode voltar quando se sentir pronto.</p>
-          <a href="index.html" class="botao botao-principal">Voltar para minha rotina</a>
-        </div>
-      </section>
-      <div class="deco" aria-hidden="true">
-          <span class="deco-anel deco-anel-1"></span>
-          <span class="deco-anel deco-anel-2"></span>
-          <span class="deco-anel deco-anel-3"></span>
-          <span class="deco-nucleo"></span>
-          <span class="deco-bolha deco-bolha-1"></span>
-          <span class="deco-bolha deco-bolha-2"></span>
-        </div>
-     </div>
+      </div>
     </div>
 
     <!-- Texto lido por leitores de tela quando a experiência muda -->
